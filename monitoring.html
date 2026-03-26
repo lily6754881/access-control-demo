@@ -25,7 +25,7 @@
         }
         .map-container {
             position: relative;
-            background-image: url('../L5.png');
+            background-image: url('./L5.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -90,7 +90,7 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- 顶部导航栏 -->
+    <!-- 顶部导航�?-->
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="px-6 py-4">
             <div class="flex items-center justify-between">
@@ -106,14 +106,14 @@
                         <span class="text-sm text-gray-600">系统在线</span>
                     </div>
                     <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-sync-alt mr-2"></i>刷新状态
+                        <i class="fas fa-sync-alt mr-2"></i>刷新状�?
                     </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- 标签页导航 -->
+    <!-- 标签页导�?-->
     <div class="bg-white border-b border-gray-200">
         <div class="px-6">
             <div class="flex space-x-1">
@@ -124,17 +124,17 @@
                     <i class="fas fa-door-open mr-2"></i>门禁控制
                 </button>
                 <button class="tab-button px-6 py-3 text-sm font-medium rounded-t-lg" data-tab="monitoring">
-                    <i class="fas fa-chart-line mr-2"></i>状态监测
+                    <i class="fas fa-chart-line mr-2"></i>状态监�?
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 标签页内容 -->
+    <!-- 标签页内�?-->
     <div class="p-6">
-        <!-- 电子地图标签页 -->
+        <!-- 电子地图标签�?-->
         <div id="map-tab" class="tab-content active">
-            <!-- 楼栋筛选 -->
+            <!-- 楼栋筛�?-->
             <div class="bg-white border-b border-gray-200 px-6 py-3 mb-6">
                 <div class="max-w-7xl mx-auto">
                     <div class="flex justify-start space-x-3">
@@ -145,22 +145,22 @@
                         </div>
                         <div class="building-card" data-building="A">
                             <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
-                                <span class="text-sm text-gray-700">A栋</span>
+                                <span class="text-sm text-gray-700">A�?/span>
                             </div>
                         </div>
                         <div class="building-card" data-building="B">
                             <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
-                                <span class="text-sm text-gray-700">B栋</span>
+                                <span class="text-sm text-gray-700">B�?/span>
                             </div>
                         </div>
                         <div class="building-card" data-building="C">
                             <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
-                                <span class="text-sm text-gray-700">C栋</span>
+                                <span class="text-sm text-gray-700">C�?/span>
                             </div>
                         </div>
                         <div class="building-card" data-building="D">
                             <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
-                                <span class="text-sm text-gray-700">D栋</span>
+                                <span class="text-sm text-gray-700">D�?/span>
                             </div>
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                 <!-- 搜索面板 -->
                 <div class="search-panel p-4">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-lg font-semibold text-gray-900">搜索与筛选</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">搜索与筛�?/h3>
                         <button id="searchToggle" class="text-gray-500 hover:text-gray-700 transition-colors">
                             <i class="fas fa-chevron-up" id="searchIcon"></i>
                         </button>
@@ -186,23 +186,23 @@
                         <div class="grid grid-cols-2 gap-2">
                             <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                                 <option>选择楼层</option>
-                                <option>1楼</option>
-                                <option>2楼</option>
-                                <option>3楼</option>
-                                <option>4楼</option>
-                                <option>5楼</option>
+                                <option>1�?/option>
+                                <option>2�?/option>
+                                <option>3�?/option>
+                                <option>4�?/option>
+                                <option>5�?/option>
                             </select>
                             <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                                 <option>选择区域</option>
-                                <option>A区</option>
-                                <option>B区</option>
-                                <option>C区</option>
-                                <option>D区</option>
+                                <option>A�?/option>
+                                <option>B�?/option>
+                                <option>C�?/option>
+                                <option>D�?/option>
                             </select>
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <button class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">正常</button>
-                            <button class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">开启</button>
+                            <button class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">开�?/button>
                             <button class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">报警</button>
                             <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">离线</button>
                         </div>
@@ -213,7 +213,7 @@
                         <h4 class="text-sm font-medium text-gray-700 mb-3">设备统计</h4>
                         <div class="space-y-2">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600">总设备</span>
+                                <span class="text-sm text-gray-600">总设�?/span>
                                 <span class="text-sm font-medium text-gray-900">156</span>
                             </div>
                             <div class="flex justify-between items-center">
@@ -221,7 +221,7 @@
                                 <span class="text-sm font-medium text-green-600">148</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600">开启</span>
+                                <span class="text-sm text-gray-600">开�?/span>
                                 <span class="text-sm font-medium text-yellow-600">5</span>
                             </div>
                             <div class="flex justify-between items-center">
@@ -233,7 +233,7 @@
                     </div>
                 </div>
 
-                <!-- A栋门禁点位 -->
+                <!-- A栋门禁点�?-->
                 <div class="door-point door-normal" style="top: 20%; left: 15%;" data-door="A101" data-building="A">
                     <i class="fas fa-door-closed"></i>
                 </div>
@@ -250,7 +250,7 @@
                     <i class="fas fa-wifi-slash"></i>
                 </div>
 
-                <!-- B栋门禁点位 -->
+                <!-- B栋门禁点�?-->
                 <div class="door-point door-normal" style="top: 60%; left: 20%;" data-door="B201" data-building="B">
                     <i class="fas fa-door-closed"></i>
                 </div>
@@ -261,7 +261,7 @@
                     <i class="fas fa-door-closed"></i>
                 </div>
 
-                <!-- C栋门禁点位 -->
+                <!-- C栋门禁点�?-->
                 <div class="door-point door-normal" style="top: 15%; left: 10%;" data-door="C301" data-building="C">
                     <i class="fas fa-door-closed"></i>
                 </div>
@@ -269,7 +269,7 @@
                     <i class="fas fa-door-open"></i>
                 </div>
 
-                <!-- D栋门禁点位 -->
+                <!-- D栋门禁点�?-->
                 <div class="door-point door-normal" style="top: 70%; left: 70%;" data-door="D401" data-building="D">
                     <i class="fas fa-door-closed"></i>
                 </div>
@@ -290,21 +290,21 @@
                             <span class="text-sm font-medium" id="doorLocation">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-sm text-gray-600">状态:</span>
+                            <span class="text-sm text-gray-600">状�?</span>
                             <span class="text-sm font-medium" id="doorStatus">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-sm text-gray-600">最后开门:</span>
+                            <span class="text-sm text-gray-600">最后开�?</span>
                             <span class="text-sm font-medium" id="lastOpen">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-sm text-gray-600">在线状态:</span>
+                            <span class="text-sm text-gray-600">在线状�?</span>
                             <span class="text-sm font-medium" id="onlineStatus">-</span>
                         </div>
                     </div>
                     <div class="mt-4 flex space-x-2">
                         <button class="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-door-open mr-1"></i>开门
+                            <i class="fas fa-door-open mr-1"></i>开�?
                         </button>
                         <button class="flex-1 bg-gray-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors">
                             <i class="fas fa-door-closed mr-1"></i>关门
@@ -314,7 +314,7 @@
             </div>
         </div>
 
-        <!-- 门禁控制标签页 -->
+        <!-- 门禁控制标签�?-->
         <div id="control-tab" class="tab-content">
 
             <!-- 门禁设备列表 -->
@@ -323,62 +323,62 @@
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-semibold text-gray-900">门禁设备列表</h2>
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-600">全选</span>
+                            <span class="text-sm text-gray-600">全�?/span>
                             <input type="checkbox" class="rounded">
                         </div>
                     </div>
-                    <!-- 筛选功能 -->
+                    <!-- 筛选功�?-->
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex items-center space-x-2">
                             <label class="text-sm text-gray-600">楼栋:</label>
                             <select id="buildingFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
                                 <option value="all">全部楼栋</option>
-                                <option value="A">A栋</option>
-                                <option value="B">B栋</option>
-                                <option value="C">C栋</option>
-                                <option value="D">D栋</option>
+                                <option value="A">A�?/option>
+                                <option value="B">B�?/option>
+                                <option value="C">C�?/option>
+                                <option value="D">D�?/option>
                             </select>
                         </div>
                         <div class="flex items-center space-x-2">
                             <label class="text-sm text-gray-600">楼层:</label>
                             <select id="floorFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
                                 <option value="all">全部楼层</option>
-                                <option value="1">1楼</option>
-                                <option value="2">2楼</option>
-                                <option value="3">3楼</option>
-                                <option value="4">4楼</option>
-                                <option value="5">5楼</option>
+                                <option value="1">1�?/option>
+                                <option value="2">2�?/option>
+                                <option value="3">3�?/option>
+                                <option value="4">4�?/option>
+                                <option value="5">5�?/option>
                             </select>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <label class="text-sm text-gray-600">状态:</label>
+                            <label class="text-sm text-gray-600">状�?</label>
                             <select id="statusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                                <option value="all">全部状态</option>
+                                <option value="all">全部状�?/option>
                                 <option value="正常">正常</option>
-                                <option value="开启">开启</option>
+                                <option value="开�?>开�?/option>
                                 <option value="报警">报警</option>
                                 <option value="离线">离线</option>
                             </select>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <input type="text" id="searchInput" placeholder="搜索设备编号或位置..." 
+                            <input type="text" id="searchInput" placeholder="搜索设备编号或位�?.." 
                                    class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm w-64">
                             <button id="searchBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
                         <button id="resetFilters" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm">
-                            <i class="fas fa-undo mr-1"></i>重置筛选
+                            <i class="fas fa-undo mr-1"></i>重置筛�?
                         </button>
                     </div>
                     <!-- 批量控制功能 -->
                     <div class="mt-4 pt-4 border-t border-gray-200">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-4">
-                                <span class="text-sm text-gray-600">已选择 <span id="selectedCount">0</span> 个设备</span>
+                                <span class="text-sm text-gray-600">已选择 <span id="selectedCount">0</span> 个设�?/span>
                                 <div class="flex items-center space-x-2">
                                     <button id="batchOpenBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
-                                        <i class="fas fa-door-open mr-1"></i>批量开门
+                                        <i class="fas fa-door-open mr-1"></i>批量开�?
                                     </button>
                                     <button id="batchCloseBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
                                         <i class="fas fa-door-closed mr-1"></i>批量关门
@@ -406,9 +406,9 @@
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">设备编号</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">位置</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">在线状态</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最后操作</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状�?/th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">在线状�?/th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最后操�?/th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                             </tr>
                         </thead>
@@ -421,7 +421,7 @@
                                     <div class="text-sm font-medium text-gray-900">A101</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">A栋1楼东门</div>
+                                    <div class="text-sm text-gray-900">A�?楼东�?/div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -434,7 +434,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    10:30 - 张三开门
+                                    10:30 - 张三开�?
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
@@ -450,7 +450,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-gray-50 device-row" data-building="A" data-floor="1" data-status="开启" data-device-id="A102">
+                            <tr class="hover:bg-gray-50 device-row" data-building="A" data-floor="1" data-status="开�? data-device-id="A102">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <input type="checkbox" class="rounded">
                                 </td>
@@ -458,11 +458,11 @@
                                     <div class="text-sm font-medium text-gray-900">A102</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">A栋1楼西门</div>
+                                    <div class="text-sm text-gray-900">A�?楼西�?/div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>开启
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>开�?
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -471,7 +471,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    11:15 - 李四开门
+                                    11:15 - 李四开�?
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
@@ -495,7 +495,7 @@
                                     <div class="text-sm font-medium text-gray-900">A103</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">A栋1楼南门</div>
+                                    <div class="text-sm text-gray-900">A�?楼南�?/div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
@@ -508,7 +508,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    09:45 - 非法开门
+                                    09:45 - 非法开�?
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
@@ -532,7 +532,7 @@
                                     <div class="text-sm font-medium text-gray-900">A105</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">A栋1楼中门</div>
+                                    <div class="text-sm text-gray-900">A�?楼中�?/div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
@@ -576,8 +576,8 @@
                                 <i class="fas fa-door-open text-green-600 text-sm"></i>
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-900">A101 开门成功</p>
-                                <p class="text-xs text-gray-500">管理员 - 2024-01-15 11:30:25</p>
+                                <p class="text-sm font-medium text-gray-900">A101 开门成�?/p>
+                                <p class="text-xs text-gray-500">管理�?- 2024-01-15 11:30:25</p>
                             </div>
                         </div>
                         <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">成功</span>
@@ -589,7 +589,7 @@
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-900">A102 关门成功</p>
-                                <p class="text-xs text-gray-500">管理员 - 2024-01-15 11:28:15</p>
+                                <p class="text-xs text-gray-500">管理�?- 2024-01-15 11:28:15</p>
                             </div>
                         </div>
                         <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">成功</span>
@@ -601,7 +601,7 @@
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-900">A103 控制失败</p>
-                                <p class="text-xs text-gray-500">管理员 - 2024-01-15 11:25:10</p>
+                                <p class="text-xs text-gray-500">管理�?- 2024-01-15 11:25:10</p>
                             </div>
                         </div>
                         <span class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">失败</span>
@@ -612,7 +612,7 @@
 
         <!-- 状态监测标签页 -->
         <div id="monitoring-tab" class="tab-content">
-            <!-- 实时状态概览 -->
+            <!-- 实时状态概�?-->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                     <div class="flex items-center justify-between">
@@ -626,7 +626,7 @@
                     </div>
                     <div class="mt-4 flex items-center text-sm">
                         <span class="text-green-600">+2.5%</span>
-                        <span class="text-gray-500 ml-2">较上月</span>
+                        <span class="text-gray-500 ml-2">较上�?/span>
                     </div>
                 </div>
 
@@ -642,7 +642,7 @@
                     </div>
                     <div class="mt-4 flex items-center text-sm">
                         <span class="text-green-600">94.9%</span>
-                        <span class="text-gray-500 ml-2">在线率</span>
+                        <span class="text-gray-500 ml-2">在线�?/span>
                     </div>
                 </div>
 
@@ -658,7 +658,7 @@
                     </div>
                     <div class="mt-4 flex items-center text-sm">
                         <span class="text-red-600">需处理</span>
-                        <span class="text-gray-500 ml-2">3个紧急</span>
+                        <span class="text-gray-500 ml-2">3个紧�?/span>
                     </div>
                 </div>
 
@@ -674,7 +674,7 @@
                     </div>
                     <div class="mt-4 flex items-center text-sm">
                         <span class="text-gray-600">5.1%</span>
-                        <span class="text-gray-500 ml-2">离线率</span>
+                        <span class="text-gray-500 ml-2">离线�?/span>
                     </div>
                 </div>
             </div>
@@ -685,10 +685,10 @@
                     <h2 class="text-xl font-semibold text-gray-900">报警处理</h2>
                     <div class="flex items-center space-x-2">
                         <button class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-                            <i class="fas fa-exclamation-triangle mr-2"></i>紧急报警
+                            <i class="fas fa-exclamation-triangle mr-2"></i>紧急报�?
                         </button>
                         <button class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors">
-                            <i class="fas fa-clock mr-2"></i>长时间开启
+                            <i class="fas fa-clock mr-2"></i>长时间开�?
                         </button>
                         <button class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
                             <i class="fas fa-tools mr-2"></i>设备故障
@@ -704,13 +704,13 @@
                                     <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">A103 - 非法开门检测</p>
-                                    <p class="text-xs text-gray-500">A栋1楼南门 - 2024-01-15 11:25:10</p>
+                                    <p class="text-sm font-medium text-gray-900">A103 - 非法开门检�?/p>
+                                    <p class="text-xs text-gray-500">A�?楼南�?- 2024-01-15 11:25:10</p>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">紧急</span>
-                                <button class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors alarm-btn" data-device="A103" data-type="非法开门检测">
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">紧�?/span>
+                                <button class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors alarm-btn" data-device="A103" data-type="非法开门检�?>
                                     处理
                                 </button>
                             </div>
@@ -724,13 +724,13 @@
                                     <i class="fas fa-clock text-yellow-600 text-sm"></i>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">A102 - 长时间开启</p>
-                                    <p class="text-xs text-gray-500">A栋1楼西门 - 已开启15分钟</p>
+                                    <p class="text-sm font-medium text-gray-900">A102 - 长时间开�?/p>
+                                    <p class="text-xs text-gray-500">A�?楼西�?- 已开�?5分钟</p>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">警告</span>
-                                <button class="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700 transition-colors alarm-btn" data-device="A102" data-type="长时间开启">
+                                <button class="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700 transition-colors alarm-btn" data-device="A102" data-type="长时间开�?>
                                     处理
                                 </button>
                             </div>
@@ -745,7 +745,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-gray-900">A105 - 设备离线</p>
-                                    <p class="text-xs text-gray-500">A栋1楼中门 - 2024-01-15 08:30:00</p>
+                                    <p class="text-xs text-gray-500">A�?楼中�?- 2024-01-15 08:30:00</p>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
@@ -759,12 +759,12 @@
                 </div>
             </div>
 
-            <!-- 设备状态监控 -->
+            <!-- 设备状态监�?-->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- 实时状态列表 -->
+                <!-- 实时状态列�?-->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                     <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">实时状态监控</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">实时状态监�?/h3>
                     </div>
                     <div class="p-6">
                         <div class="space-y-4">
@@ -772,8 +772,8 @@
                                 <div class="flex items-center space-x-3">
                                     <div class="w-3 h-3 bg-green-500 rounded-full"></div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900">A101 - A栋1楼东门</p>
-                                        <p class="text-xs text-gray-500">正常 - 最后开门: 10:30</p>
+                                        <p class="text-sm font-medium text-gray-900">A101 - A�?楼东�?/p>
+                                        <p class="text-xs text-gray-500">正常 - 最后开�? 10:30</p>
                                     </div>
                                 </div>
                                 <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">正常</span>
@@ -783,19 +783,19 @@
                                 <div class="flex items-center space-x-3">
                                     <div class="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900">A102 - A栋1楼西门</p>
-                                        <p class="text-xs text-gray-500">开启 - 已开启15分钟</p>
+                                        <p class="text-sm font-medium text-gray-900">A102 - A�?楼西�?/p>
+                                        <p class="text-xs text-gray-500">开�?- 已开�?5分钟</p>
                                     </div>
                                 </div>
-                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">开启</span>
+                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">开�?/span>
                             </div>
 
                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900">A103 - A栋1楼南门</p>
-                                        <p class="text-xs text-gray-500">报警 - 非法开门</p>
+                                        <p class="text-sm font-medium text-gray-900">A103 - A�?楼南�?/p>
+                                        <p class="text-xs text-gray-500">报警 - 非法开�?/p>
                                     </div>
                                 </div>
                                 <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">报警</span>
@@ -805,8 +805,8 @@
                                 <div class="flex items-center space-x-3">
                                     <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900">A105 - A栋1楼中门</p>
-                                        <p class="text-xs text-gray-500">离线 - 设备无响应</p>
+                                        <p class="text-sm font-medium text-gray-900">A105 - A�?楼中�?/p>
+                                        <p class="text-xs text-gray-500">离线 - 设备无响�?/p>
                                     </div>
                                 </div>
                                 <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">离线</span>
@@ -825,14 +825,14 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-4 h-4 bg-red-500 rounded"></div>
-                                    <span class="text-sm text-gray-700">非法开门</span>
+                                    <span class="text-sm text-gray-700">非法开�?/span>
                                 </div>
                                 <span class="text-sm font-medium text-gray-900">3</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-4 h-4 bg-yellow-500 rounded"></div>
-                                    <span class="text-sm text-gray-700">长时间开启</span>
+                                    <span class="text-sm text-gray-700">长时间开�?/span>
                                 </div>
                                 <span class="text-sm font-medium text-gray-900">5</span>
                             </div>
@@ -858,11 +858,11 @@
                                 <span class="text-lg font-bold text-red-600">24</span>
                             </div>
                             <div class="flex items-center justify-between text-sm mt-2">
-                                <span class="text-gray-600">已处理</span>
+                                <span class="text-gray-600">已处�?/span>
                                 <span class="text-lg font-bold text-green-600">16</span>
                             </div>
                             <div class="flex items-center justify-between text-sm mt-2">
-                                <span class="text-gray-600">待处理</span>
+                                <span class="text-gray-600">待处�?/span>
                                 <span class="text-lg font-bold text-yellow-600">8</span>
                             </div>
                         </div>
@@ -907,7 +907,7 @@
         </div>
     </div>
 
-    <!-- 报警处理对话框 -->
+    <!-- 报警处理对话�?-->
     <div id="alarmModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
@@ -926,7 +926,7 @@
                             设备: <span id="modalAlarmDevice" class="font-medium">-</span><br>
                             报警类型: <span id="modalAlarmType" class="font-medium">-</span>
                         </p>
-                        <textarea placeholder="请输入处理说明..." 
+                        <textarea placeholder="请输入处理说�?.." 
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 h-20 resize-none"></textarea>
                     </div>
                     <div class="flex space-x-3">
@@ -942,7 +942,7 @@
         </div>
     </div>
 
-    <!-- 控制确认对话框 -->
+    <!-- 控制确认对话�?-->
     <div id="controlModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
@@ -976,12 +976,12 @@
     </div>
 
     <script>
-        // 标签页切换功能
+        // 标签页切换功�?
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
                 
-                // 移除所有活动状态
+                // 移除所有活动状�?
                 document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
                 
@@ -993,30 +993,30 @@
 
         // 门禁点位数据
         const doorData = {
-            'A101': { location: 'A栋1楼东门', status: '正常', lastOpen: '10:30', online: true, building: 'A', floor: '1', area: 'A区' },
-            'A102': { location: 'A栋1楼西门', status: '开启', lastOpen: '11:15', online: true, building: 'A', floor: '1', area: 'A区' },
-            'A103': { location: 'A栋1楼南门', status: '报警', lastOpen: '09:45', online: true, building: 'A', floor: '1', area: 'A区' },
-            'A104': { location: 'A栋1楼北门', status: '正常', lastOpen: '10:20', online: true, building: 'A', floor: '1', area: 'A区' },
-            'A105': { location: 'A栋1楼中门', status: '离线', lastOpen: '08:30', online: false, building: 'A', floor: '1', area: 'A区' },
-            'B201': { location: 'B栋2楼东门', status: '正常', lastOpen: '10:15', online: true, building: 'B', floor: '2', area: 'B区' },
-            'B202': { location: 'B栋2楼西门', status: '报警', lastOpen: '09:30', online: true, building: 'B', floor: '2', area: 'B区' },
-            'B203': { location: 'B栋2楼南门', status: '正常', lastOpen: '11:10', online: true, building: 'B', floor: '2', area: 'B区' },
-            'C301': { location: 'C栋3楼东门', status: '正常', lastOpen: '10:05', online: true, building: 'C', floor: '3', area: 'C区' },
-            'C302': { location: 'C栋3楼西门', status: '开启', lastOpen: '11:30', online: true, building: 'C', floor: '3', area: 'C区' },
-            'D401': { location: 'D栋4楼东门', status: '正常', lastOpen: '10:35', online: true, building: 'D', floor: '4', area: 'D区' },
-            'D402': { location: 'D栋4楼西门', status: '开启', lastOpen: '11:40', online: true, building: 'D', floor: '4', area: 'D区' }
+            'A101': { location: 'A�?楼东�?, status: '正常', lastOpen: '10:30', online: true, building: 'A', floor: '1', area: 'A�? },
+            'A102': { location: 'A�?楼西�?, status: '开�?, lastOpen: '11:15', online: true, building: 'A', floor: '1', area: 'A�? },
+            'A103': { location: 'A�?楼南�?, status: '报警', lastOpen: '09:45', online: true, building: 'A', floor: '1', area: 'A�? },
+            'A104': { location: 'A�?楼北�?, status: '正常', lastOpen: '10:20', online: true, building: 'A', floor: '1', area: 'A�? },
+            'A105': { location: 'A�?楼中�?, status: '离线', lastOpen: '08:30', online: false, building: 'A', floor: '1', area: 'A�? },
+            'B201': { location: 'B�?楼东�?, status: '正常', lastOpen: '10:15', online: true, building: 'B', floor: '2', area: 'B�? },
+            'B202': { location: 'B�?楼西�?, status: '报警', lastOpen: '09:30', online: true, building: 'B', floor: '2', area: 'B�? },
+            'B203': { location: 'B�?楼南�?, status: '正常', lastOpen: '11:10', online: true, building: 'B', floor: '2', area: 'B�? },
+            'C301': { location: 'C�?楼东�?, status: '正常', lastOpen: '10:05', online: true, building: 'C', floor: '3', area: 'C�? },
+            'C302': { location: 'C�?楼西�?, status: '开�?, lastOpen: '11:30', online: true, building: 'C', floor: '3', area: 'C�? },
+            'D401': { location: 'D�?楼东�?, status: '正常', lastOpen: '10:35', online: true, building: 'D', floor: '4', area: 'D�? },
+            'D402': { location: 'D�?楼西�?, status: '开�?, lastOpen: '11:40', online: true, building: 'D', floor: '4', area: 'D�? }
         };
 
         // 楼栋背景图片映射
         const buildingBackgrounds = {
-            'all': '../L5.png',
-            'A': '../L1.png',
-            'B': '../L5.png',
-            'C': '../L1.png',
-            'D': '../L5.png'
+            'all': './L5.png',
+            'A': './L1.png',
+            'B': './L5.png',
+            'C': './L1.png',
+            'D': './L5.png'
         };
 
-        // 筛选状态
+        // 筛选状�?
         let currentFilters = {
             building: 'all',
             floor: 'all',
@@ -1043,7 +1043,7 @@
                     const mapRect = mapContainer.getBoundingClientRect();
                     const pointRect = this.getBoundingClientRect();
                     
-                    // 获取点位在地图容器中的相对位置
+                    // 获取点位在地图容器中的相对位�?
                     const pointX = pointRect.left - mapRect.left;
                     const pointY = pointRect.top - mapRect.top;
                     
@@ -1054,7 +1054,7 @@
                     // 检查右边界
                     const panelWidth = 300; // 面板宽度
                     if (panelX + panelWidth > mapRect.width) {
-                        panelX = pointX - panelWidth - 10; // 显示在左侧
+                        panelX = pointX - panelWidth - 10; // 显示在左�?
                     }
                     
                     // 检查左边界
@@ -1093,21 +1093,21 @@
             card.addEventListener('click', function() {
                 const selectedBuilding = this.getAttribute('data-building');
                 
-                // 更新筛选状态
+                // 更新筛选状�?
                 currentFilters.building = selectedBuilding;
                 
-                // 更新卡片状态
+                // 更新卡片状�?
                 document.querySelectorAll('.building-card').forEach(c => {
                     c.classList.remove('active');
                     const cardContent = c.querySelector('div');
                     const text = c.querySelector('span');
                     
                     if (c === this) {
-                        // 选中状态
+                        // 选中状�?
                         cardContent.className = 'px-3 py-1.5 bg-blue-100 border border-blue-300 rounded cursor-pointer hover:bg-blue-200 transition-colors';
                         text.className = 'text-sm text-blue-700';
                     } else {
-                        // 未选中状态
+                        // 未选中状�?
                         cardContent.className = 'px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors';
                         text.className = 'text-sm text-gray-700';
                     }
@@ -1120,7 +1120,7 @@
                     mapContainer.style.backgroundImage = `url('${newBackground}')`;
                 }
                 
-                // 筛选门禁点位
+                // 筛选门禁点�?
                 document.querySelectorAll('.door-point').forEach(point => {
                     const building = point.getAttribute('data-building');
                     if (selectedBuilding === 'all' || building === selectedBuilding) {
@@ -1163,7 +1163,7 @@
                 const device = this.getAttribute('data-device');
                 
                 document.getElementById('modalDevice').textContent = device;
-                document.getElementById('modalAction').textContent = action === 'open' ? '开门' : '关门';
+                document.getElementById('modalAction').textContent = action === 'open' ? '开�? : '关门';
                 document.getElementById('controlModal').classList.remove('hidden');
                 
                 // 存储当前操作信息
@@ -1185,9 +1185,9 @@
                     console.log(`执行操作: ${device} ${action}`);
                     
                     // 显示成功提示
-                    showNotification(`${device} ${action === 'open' ? '开门' : '关门'}操作已执行`, 'success');
+                    showNotification(`${device} ${action === 'open' ? '开�? : '关门'}操作已执行`, 'success');
                     
-                    // 关闭对话框
+                    // 关闭对话�?
                     modal.classList.add('hidden');
                 }
             });
@@ -1205,7 +1205,7 @@
         }
 
 
-        // 全选功能
+        // 全选功�?
         document.querySelectorAll('thead input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
@@ -1215,7 +1215,7 @@
             });
         });
 
-        // 门禁控制筛选功能
+        // 门禁控制筛选功�?
         function filterDevices() {
             const buildingFilter = document.getElementById('buildingFilter').value;
             const floorFilter = document.getElementById('floorFilter').value;
@@ -1231,16 +1231,16 @@
                 const deviceId = row.getAttribute('data-device-id');
                 const location = row.querySelector('td:nth-child(3) div').textContent.toLowerCase();
                 
-                // 检查楼栋筛选
+                // 检查楼栋筛�?
                 const buildingMatch = buildingFilter === 'all' || building === buildingFilter;
                 
-                // 检查楼层筛选
+                // 检查楼层筛�?
                 const floorMatch = floorFilter === 'all' || floor === floorFilter;
                 
-                // 检查状态筛选
+                // 检查状态筛�?
                 const statusMatch = statusFilter === 'all' || status === statusFilter;
                 
-                // 检查搜索筛选
+                // 检查搜索筛�?
                 const searchMatch = searchInput === '' || 
                     deviceId.toLowerCase().includes(searchInput) || 
                     location.includes(searchInput);
@@ -1254,14 +1254,14 @@
             });
         }
 
-        // 绑定筛选事件
+        // 绑定筛选事�?
         document.getElementById('buildingFilter').addEventListener('change', filterDevices);
         document.getElementById('floorFilter').addEventListener('change', filterDevices);
         document.getElementById('statusFilter').addEventListener('change', filterDevices);
         document.getElementById('searchInput').addEventListener('input', filterDevices);
         document.getElementById('searchBtn').addEventListener('click', filterDevices);
 
-        // 重置筛选功能
+        // 重置筛选功�?
         document.getElementById('resetFilters').addEventListener('click', function() {
             document.getElementById('buildingFilter').value = 'all';
             document.getElementById('floorFilter').value = 'all';
@@ -1276,7 +1276,7 @@
             const count = selectedCheckboxes.length;
             document.getElementById('selectedCount').textContent = count;
             
-            // 更新批量控制按钮状态
+            // 更新批量控制按钮状�?
             const batchOpenBtn = document.getElementById('batchOpenBtn');
             const batchCloseBtn = document.getElementById('batchCloseBtn');
             
@@ -1289,7 +1289,7 @@
             }
         }
 
-        // 监听所有复选框的变化
+        // 监听所有复选框的变�?
         document.addEventListener('change', function(e) {
             if (e.target.type === 'checkbox' && e.target.closest('tbody')) {
                 updateSelectedCount();
@@ -1305,7 +1305,7 @@
                 checkbox.checked = true;
             });
             
-            // 更新表头全选状态
+            // 更新表头全选状�?
             const headerCheckbox = document.querySelector('thead input[type="checkbox"]');
             headerCheckbox.checked = true;
             
@@ -1319,14 +1319,14 @@
                 checkbox.checked = false;
             });
             
-            // 更新表头全选状态
+            // 更新表头全选状�?
             const headerCheckbox = document.querySelector('thead input[type="checkbox"]');
             headerCheckbox.checked = false;
             
             updateSelectedCount();
         });
 
-        // 批量开门功能
+        // 批量开门功�?
         document.getElementById('batchOpenBtn').addEventListener('click', function() {
             const selectedCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
             if (selectedCheckboxes.length === 0) {
@@ -1339,7 +1339,7 @@
                 return row.getAttribute('data-device-id');
             });
             
-            if (confirm(`确认要对 ${deviceIds.length} 个设备执行批量开门操作吗？\n设备列表：${deviceIds.join(', ')}`)) {
+            if (confirm(`确认要对 ${deviceIds.length} 个设备执行批量开门操作吗？\n设备列表�?{deviceIds.join(', ')}`)) {
                 showNotification(`批量开门操作已执行，共${deviceIds.length}个设备`, 'success');
                 // 这里可以添加实际的批量开门逻辑
             }
@@ -1358,13 +1358,13 @@
                 return row.getAttribute('data-device-id');
             });
             
-            if (confirm(`确认要对 ${deviceIds.length} 个设备执行批量关门操作吗？\n设备列表：${deviceIds.join(', ')}`)) {
-                showNotification(`批量关门操作已执行，共${deviceIds.length}个设备`, 'success');
+            if (confirm(`确认要对 ${deviceIds.length} 个设备执行批量关门操作吗？\n设备列表�?{deviceIds.join(', ')}`)) {
+                showNotification(`批量关门操作已执行，�?{deviceIds.length}个设备`, 'success');
                 // 这里可以添加实际的批量关门逻辑
             }
         });
 
-        // 状态监测功能
+        // 状态监测功�?
         // 报警处理按钮点击事件
         document.querySelectorAll('.alarm-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -1390,7 +1390,7 @@
 
         // 模拟实时数据更新
         setInterval(() => {
-            // 更新在线设备数
+            // 更新在线设备�?
             const onlineCount = document.querySelector('.text-3xl.font-bold.text-green-600');
             if (onlineCount) {
                 const currentCount = parseInt(onlineCount.textContent);
