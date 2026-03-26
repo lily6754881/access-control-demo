@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 门禁管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .setting-card {
+            transition: all 0.3s ease;
+        }
+        .setting-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background-color: #10b981; }
+        .status-offline { background-color: #ef4444; }
+        .status-warning { background-color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900">系统设置与维护</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="status-indicator status-online"></span>
+                        <span class="text-sm text-gray-600">系统正常</span>
+                    </div>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-save mr-2"></i>保存配置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="p-6">
+        <!-- 标签页导航 -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6">
+                    <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 active" data-tab="parameters">
+                        参数配置
+                    </button>
+                    <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="devices">
+                        设备接入
+                    </button>
+                    <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="backup">
+                        备份恢复
+                    </button>
+                    <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="security">
+                        安全设置
+                    </button>
+                    <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="system">
+                        系统信息
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- 参数配置标签页 -->
+        <div id="parameters" class="tab-content active">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 报警参数 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">报警参数配置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">长时间开启阈值（分钟）</label>
+                            <input type="number" value="15" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">报警声音音量</label>
+                            <input type="range" min="0" max="100" value="80" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>静音</span>
+                                <span>最大</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">报警推送方式</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">弹窗提示</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">声音报警</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">邮件通知</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">短信通知</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 地图配置 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">地图配置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">默认地图层级</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>园区级</option>
+                                <option>楼栋级</option>
+                                <option>楼层级</option>
+                                <option>区域级</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">地图刷新间隔（秒）</label>
+                            <input type="number" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">点位显示设置</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">显示设备编号</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">显示状态指示</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">显示设备名称</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统参数 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">系统参数</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">数据保存期限（天）</label>
+                            <input type="number" value="90" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">自动备份间隔（小时）</label>
+                            <input type="number" value="24" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">日志级别</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>DEBUG</option>
+                                <option>INFO</option>
+                                <option>WARN</option>
+                                <option>ERROR</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 界面设置 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">界面设置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">主题模式</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>浅色模式</option>
+                                <option>深色模式</option>
+                                <option>自动切换</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">语言设置</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>简体中文</option>
+                                <option>English</option>
+                                <option>繁體中文</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">时区设置</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>Asia/Shanghai (UTC+8)</option>
+                                <option>UTC (UTC+0)</option>
+                                <option>America/New_York (UTC-5)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设备接入标签页 -->
+        <div id="devices" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 设备连接状态 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">设备连接状态</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 bg-green-100 rounded-full">
+                                    <i class="fas fa-ethernet text-green-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">TCP/IP 连接</p>
+                                    <p class="text-xs text-gray-500">192.168.1.100:8080</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <span class="status-indicator status-online"></span>在线
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 bg-blue-100 rounded-full">
+                                    <i class="fas fa-plug text-blue-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">RS485 连接</p>
+                                    <p class="text-xs text-gray-500">COM1, 9600bps</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <span class="status-indicator status-online"></span>在线
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 bg-yellow-100 rounded-full">
+                                    <i class="fas fa-wifi text-yellow-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">WiFi 连接</p>
+                                    <p class="text-xs text-gray-500">192.168.1.101</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                <span class="status-indicator status-warning"></span>不稳定
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 设备配置 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">设备配置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">通信协议</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>TCP/IP</option>
+                                <option>RS485</option>
+                                <option>RS232</option>
+                                <option>WiFi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">设备地址</label>
+                            <input type="text" value="192.168.1.100" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">端口号</label>
+                            <input type="number" value="8080" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">超时时间（秒）</label>
+                            <input type="number" value="30" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 设备测试 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">设备测试</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">连接测试</span>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                测试连接
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">设备响应</span>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                测试响应
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">数据同步</span>
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                同步数据
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 备份恢复标签页 -->
+        <div id="backup" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 备份设置 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">备份设置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">自动备份</label>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">启用</span>
+                                </label>
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option>每日</option>
+                                    <option>每周</option>
+                                    <option>每月</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">备份时间</label>
+                            <input type="time" value="02:00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">备份路径</label>
+                            <div class="flex space-x-2">
+                                <input type="text" value="/backup/" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <button class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                                    浏览
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">保留备份数量</label>
+                            <input type="number" value="30" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 备份操作 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">备份操作</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">立即备份</p>
+                                <p class="text-xs text-gray-500">创建系统完整备份</p>
+                            </div>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                开始备份
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">数据备份</p>
+                                <p class="text-xs text-gray-500">仅备份数据库</p>
+                            </div>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                数据备份
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">配置备份</p>
+                                <p class="text-xs text-gray-500">仅备份配置文件</p>
+                            </div>
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                配置备份
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 备份历史 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">备份历史</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-file-archive text-blue-600"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">backup_20240115_020000.zip</p>
+                                    <p class="text-xs text-gray-500">2024-01-15 02:00:00</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-green-600 hover:text-green-900">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-file-archive text-blue-600"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">backup_20240114_020000.zip</p>
+                                    <p class="text-xs text-gray-500">2024-01-14 02:00:00</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-green-600 hover:text-green-900">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统升级 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">系统升级</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">当前版本</p>
+                                <p class="text-xs text-gray-500">v2.1.0</p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                最新版本
+                            </span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">升级包上传</label>
+                            <div class="flex space-x-2">
+                                <input type="file" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg">
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    上传
+                                </button>
+                            </div>
+                        </div>
+                        <button class="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                            <i class="fas fa-arrow-up mr-2"></i>开始升级
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 安全设置标签页 -->
+        <div id="security" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 密码策略 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">密码策略</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">最小密码长度</label>
+                            <input type="number" value="8" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">密码复杂度要求</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">包含大写字母</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">包含小写字母</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">包含数字</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">包含特殊字符</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">密码有效期（天）</label>
+                            <input type="number" value="90" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">登录失败锁定</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" value="5" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">次失败后锁定</span>
+                                <input type="number" value="30" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 二次验证 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">二次验证</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">验证方式</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">短信验证码</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">邮箱验证码</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">Google Authenticator</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">验证码有效期（分钟）</label>
+                            <input type="number" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">信任设备</label>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">启用</span>
+                                </label>
+                                <input type="number" value="30" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">天</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 会话管理 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">会话管理</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">会话超时时间（分钟）</label>
+                            <input type="number" value="30" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">最大并发会话数</label>
+                            <input type="number" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">强制下线</label>
+                            <button class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                                <i class="fas fa-sign-out-alt mr-2"></i>强制所有用户下线
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 加密设置 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">加密设置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">数据传输加密</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>TLS 1.3</option>
+                                <option>TLS 1.2</option>
+                                <option>SSL 3.0</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">数据存储加密</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">启用数据库加密</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" checked class="rounded">
+                                    <span class="ml-2 text-sm text-gray-700">启用文件加密</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">密钥管理</label>
+                            <button class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                <i class="fas fa-key mr-2"></i>重新生成密钥
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统信息标签页 -->
+        <div id="system" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 系统状态 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">系统状态</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">系统运行时间</span>
+                            <span class="text-sm font-medium text-gray-900">15天 8小时 32分钟</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">CPU使用率</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 25%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">25%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">内存使用率</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-yellow-600 h-2 rounded-full" style="width: 68%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">68%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">磁盘使用率</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">45%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 版本信息 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">版本信息</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">系统版本</span>
+                            <span class="text-sm font-medium text-gray-900">v2.1.0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">构建日期</span>
+                            <span class="text-sm font-medium text-gray-900">2024-01-10</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">数据库版本</span>
+                            <span class="text-sm font-medium text-gray-900">MySQL 8.0.32</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">Web服务器</span>
+                            <span class="text-sm font-medium text-gray-900">Nginx 1.20.2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 许可证信息 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">许可证信息</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">许可证类型</span>
+                            <span class="text-sm font-medium text-gray-900">企业版</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">最大设备数</span>
+                            <span class="text-sm font-medium text-gray-900">1000</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">最大用户数</span>
+                            <span class="text-sm font-medium text-gray-900">100</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-700">到期时间</span>
+                            <span class="text-sm font-medium text-gray-900">2025-01-15</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统日志 -->
+                <div class="setting-card bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">系统日志</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="text-xs text-gray-600">2024-01-15 11:30:25</span>
+                            <span class="text-xs text-green-600">INFO</span>
+                            <span class="text-xs text-gray-700">系统启动完成</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="text-xs text-gray-600">2024-01-15 11:25:10</span>
+                            <span class="text-xs text-yellow-600">WARN</span>
+                            <span class="text-xs text-gray-700">设备A103连接异常</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="text-xs text-gray-600">2024-01-15 11:20:30</span>
+                            <span class="text-xs text-blue-600">DEBUG</span>
+                            <span class="text-xs text-gray-700">用户登录成功</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                        查看完整日志
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 标签页切换
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // 移除所有活动状态
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.add('text-gray-500');
+                });
+                
+                // 添加当前活动状态
+                this.classList.add('active');
+                this.classList.remove('text-gray-500');
+                
+                // 隐藏所有标签页内容
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 显示目标标签页内容
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // 通知函数
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500 text-white' :
+                type === 'warning' ? 'bg-yellow-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // 按钮点击事件
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                const text = this.textContent.trim();
+                if (text.includes('测试') || text.includes('备份') || text.includes('升级') || text.includes('保存')) {
+                    showNotification(`${text}操作已执行`, 'success');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门禁管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        .page-transition {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background-color: #10b981; }
+        .status-offline { background-color: #ef4444; }
+        .status-alarm { background-color: #f59e0b; }
+        .status-normal { background-color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl font-bold text-gray-900">门禁管理系统</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="status-indicator status-online"></span>
+                        <span class="text-sm text-gray-600">系统在线</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1">3</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" 
+                             alt="用户头像" class="w-8 h-8 rounded-full">
+                        <span class="text-sm text-gray-700">管理员</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 侧边栏 -->
+    <aside id="sidebar" class="fixed left-0 top-16 w-64 h-full bg-white shadow-lg sidebar-transition transform -translate-x-full lg:translate-x-0 z-40">
+        <div class="p-4">
+            <nav class="space-y-2">
+                <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>系统概览</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors" data-page="monitoring">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>门禁监测</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors" data-page="records">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>设备台账</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors" data-page="permission">
+                    <i class="fas fa-users-cog"></i>
+                    <span>权限管理</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main id="mainContent" class="lg:ml-64 pt-16 min-h-screen">
+        <!-- 系统概览页面 -->
+        <div id="dashboard" class="page-content p-6">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">系统概览</h2>
+                <p class="text-gray-600">门禁管理系统实时监控面板</p>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">总设备数</p>
+                            <p class="text-3xl font-bold text-gray-900">156</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <i class="fas fa-door-closed text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600">+2.5%</span>
+                        <span class="text-gray-500 ml-2">较上月</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">在线设备</p>
+                            <p class="text-3xl font-bold text-green-600">148</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <i class="fas fa-wifi text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600">94.9%</span>
+                        <span class="text-gray-500 ml-2">在线率</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">报警设备</p>
+                            <p class="text-3xl font-bold text-red-600">8</p>
+                        </div>
+                        <div class="p-3 bg-red-100 rounded-full">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-red-600">需处理</span>
+                        <span class="text-gray-500 ml-2">3个紧急</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">今日开门</p>
+                            <p class="text-3xl font-bold text-blue-600">1,234</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600">+12.3%</span>
+                        <span class="text-gray-500 ml-2">较昨日</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速操作和最近活动 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">快速操作</h3>
+                    <div class="space-y-3">
+                        <a href="monitoring.html" class="w-full flex items-center justify-between p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-shield-alt text-blue-600"></i>
+                                <span class="text-gray-700">门禁监测</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </a>
+                        <a href="#" class="w-full flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors" data-page="records">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-clipboard-list text-green-600"></i>
+                                <span class="text-gray-700">设备台账</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </a>
+                        <a href="#" class="w-full flex items-center justify-between p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors" data-page="monitoring">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                <span class="text-gray-700">处理报警事件</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">最近活动</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="p-2 bg-red-100 rounded-full">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">A栋1楼门禁异常开启</p>
+                                <p class="text-xs text-gray-500">2分钟前</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="p-2 bg-green-100 rounded-full">
+                                <i class="fas fa-check text-green-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">B栋2楼门禁正常关闭</p>
+                                <p class="text-xs text-gray-500">5分钟前</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="p-2 bg-blue-100 rounded-full">
+                                <i class="fas fa-user text-blue-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">用户张三进入C栋3楼</p>
+                                <p class="text-xs text-gray-500">8分钟前</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- 设备台账页面 -->
+        <div id="records" class="page-content hidden">
+            <iframe src="records.html" class="w-full h-screen border-0"></iframe>
+        </div>
+        
+        <!-- 权限管理页面 -->
+        <div id="permission" class="page-content hidden">
+            <iframe src="permission.html" class="w-full h-screen border-0"></iframe>
+        </div>
+        
+        <!-- 门禁监测页面 -->
+        <div id="monitoring" class="page-content hidden">
+            <iframe src="monitoring.html" class="w-full h-screen border-0"></iframe>
+        </div>
+        
+        <!-- 系统设置页面 -->
+        <div id="settings" class="page-content hidden">
+            <iframe src="settings.html" class="w-full h-screen border-0"></iframe>
+        </div>
+    </main>
+
+    <!-- 遮罩层 -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+    <script>
+        // 侧边栏切换
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        });
+
+        // 页面切换
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageContents = document.querySelectorAll('.page-content');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = item.getAttribute('data-page');
+                
+                // 移除所有活动状态
+                navItems.forEach(nav => nav.classList.remove('bg-blue-50', 'text-blue-600'));
+                navItems.forEach(nav => nav.classList.add('text-gray-700'));
+                
+                // 添加当前活动状态
+                item.classList.add('bg-blue-50', 'text-blue-600');
+                item.classList.remove('text-gray-700');
+                
+                // 隐藏所有页面
+                pageContents.forEach(page => page.classList.add('hidden'));
+                
+                // 显示目标页面
+                const targetPageElement = document.getElementById(targetPage);
+                if (targetPageElement) {
+                    targetPageElement.classList.remove('hidden');
+                }
+                
+                // 移动端自动关闭侧边栏
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.add('hidden');
+                }
+            });
+        });
+
+        // 快速操作链接处理
+        const quickActionLinks = document.querySelectorAll('[data-page]');
+        quickActionLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = link.getAttribute('data-page');
+                
+                // 如果是门禁监测页面，需要特殊处理
+                if (targetPage === 'monitoring') {
+                    // 移除所有活动状态
+                    navItems.forEach(nav => nav.classList.remove('bg-blue-50', 'text-blue-600'));
+                    navItems.forEach(nav => nav.classList.add('text-gray-700'));
+                    
+                    // 激活门禁监测导航项
+                    const monitoringNav = document.querySelector('[data-page="monitoring"]');
+                    if (monitoringNav) {
+                        monitoringNav.classList.add('bg-blue-50', 'text-blue-600');
+                        monitoringNav.classList.remove('text-gray-700');
+                    }
+                    
+                    // 隐藏所有页面
+                    pageContents.forEach(page => page.classList.add('hidden'));
+                    
+                    // 显示门禁监测页面
+                    const monitoringPage = document.getElementById('monitoring');
+                    if (monitoringPage) {
+                        monitoringPage.classList.remove('hidden');
+                    }
+                } else {
+                    // 处理其他页面（如设备台账）
+                    // 移除所有活动状态
+                    navItems.forEach(nav => nav.classList.remove('bg-blue-50', 'text-blue-600'));
+                    navItems.forEach(nav => nav.classList.add('text-gray-700'));
+                    
+                    // 激活对应导航项
+                    const targetNav = document.querySelector(`[data-page="${targetPage}"]`);
+                    if (targetNav) {
+                        targetNav.classList.add('bg-blue-50', 'text-blue-600');
+                        targetNav.classList.remove('text-gray-700');
+                    }
+                    
+                    // 隐藏所有页面
+                    pageContents.forEach(page => page.classList.add('hidden'));
+                    
+                    // 显示目标页面
+                    const targetPageElement = document.getElementById(targetPage);
+                    if (targetPageElement) {
+                        targetPageElement.classList.remove('hidden');
+                    }
+                }
+                
+                // 移动端自动关闭侧边栏
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.add('hidden');
+                }
+            });
+        });
+
+        // 默认激活第一个导航项
+        navItems[0].classList.add('bg-blue-50', 'text-blue-600');
+        navItems[0].classList.remove('text-gray-700');
+    </script>
+</body>
+</html>

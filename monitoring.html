@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门禁监测 - 门禁管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .tab-button:hover:not(.active) {
+            background-color: #f3f4f6;
+        }
+        .map-container {
+            position: relative;
+            background-image: url('../L5.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 0.3s ease-in-out;
+        }
+        .door-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .door-point:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+        .door-normal { background-color: #10b981; }
+        .door-open { background-color: #f59e0b; }
+        .door-alarm { background-color: #ef4444; }
+        .door-offline { background-color: #6b7280; }
+        .door-point::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: inherit;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.1; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+        .search-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 20;
+        }
+        .door-details {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 20;
+            max-width: 300px;
+            min-width: 250px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900">门禁监测</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-gray-600">系统在线</span>
+                    </div>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新状态
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 标签页导航 -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="px-6">
+            <div class="flex space-x-1">
+                <button class="tab-button active px-6 py-3 text-sm font-medium rounded-t-lg" data-tab="map">
+                    <i class="fas fa-map-marked-alt mr-2"></i>电子地图
+                </button>
+                <button class="tab-button px-6 py-3 text-sm font-medium rounded-t-lg" data-tab="control">
+                    <i class="fas fa-door-open mr-2"></i>门禁控制
+                </button>
+                <button class="tab-button px-6 py-3 text-sm font-medium rounded-t-lg" data-tab="monitoring">
+                    <i class="fas fa-chart-line mr-2"></i>状态监测
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 标签页内容 -->
+    <div class="p-6">
+        <!-- 电子地图标签页 -->
+        <div id="map-tab" class="tab-content active">
+            <!-- 楼栋筛选 -->
+            <div class="bg-white border-b border-gray-200 px-6 py-3 mb-6">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex justify-start space-x-3">
+                        <div class="building-card active" data-building="all">
+                            <div class="px-3 py-1.5 bg-blue-100 border border-blue-300 rounded cursor-pointer hover:bg-blue-200 transition-colors">
+                                <span class="text-sm text-blue-700">全部</span>
+                            </div>
+                        </div>
+                        <div class="building-card" data-building="A">
+                            <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
+                                <span class="text-sm text-gray-700">A栋</span>
+                            </div>
+                        </div>
+                        <div class="building-card" data-building="B">
+                            <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
+                                <span class="text-sm text-gray-700">B栋</span>
+                            </div>
+                        </div>
+                        <div class="building-card" data-building="C">
+                            <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
+                                <span class="text-sm text-gray-700">C栋</span>
+                            </div>
+                        </div>
+                        <div class="building-card" data-building="D">
+                            <div class="px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors">
+                                <span class="text-sm text-gray-700">D栋</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 地图容器 -->
+            <div class="map-container h-screen w-full relative">
+                <!-- 搜索面板 -->
+                <div class="search-panel p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-semibold text-gray-900">搜索与筛选</h3>
+                        <button id="searchToggle" class="text-gray-500 hover:text-gray-700 transition-colors">
+                            <i class="fas fa-chevron-up" id="searchIcon"></i>
+                        </button>
+                    </div>
+                    <div id="searchContent" class="transition-all duration-300 ease-in-out">
+                    <div class="space-y-3">
+                        <div>
+                            <input type="text" placeholder="搜索门禁点位..." 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>选择楼层</option>
+                                <option>1楼</option>
+                                <option>2楼</option>
+                                <option>3楼</option>
+                                <option>4楼</option>
+                                <option>5楼</option>
+                            </select>
+                            <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>选择区域</option>
+                                <option>A区</option>
+                                <option>B区</option>
+                                <option>C区</option>
+                                <option>D区</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">正常</button>
+                            <button class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">开启</button>
+                            <button class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">报警</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">离线</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 设备统计 -->
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">设备统计</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">总设备</span>
+                                <span class="text-sm font-medium text-gray-900">156</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">在线</span>
+                                <span class="text-sm font-medium text-green-600">148</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">开启</span>
+                                <span class="text-sm font-medium text-yellow-600">5</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">报警</span>
+                                <span class="text-sm font-medium text-red-600">3</span>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- A栋门禁点位 -->
+                <div class="door-point door-normal" style="top: 20%; left: 15%;" data-door="A101" data-building="A">
+                    <i class="fas fa-door-closed"></i>
+                </div>
+                <div class="door-point door-open" style="top: 25%; left: 25%;" data-door="A102" data-building="A">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div class="door-point door-alarm" style="top: 30%; left: 35%;" data-door="A103" data-building="A">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="door-point door-normal" style="top: 35%; left: 45%;" data-door="A104" data-building="A">
+                    <i class="fas fa-door-closed"></i>
+                </div>
+                <div class="door-point door-offline" style="top: 40%; left: 55%;" data-door="A105" data-building="A">
+                    <i class="fas fa-wifi-slash"></i>
+                </div>
+
+                <!-- B栋门禁点位 -->
+                <div class="door-point door-normal" style="top: 60%; left: 20%;" data-door="B201" data-building="B">
+                    <i class="fas fa-door-closed"></i>
+                </div>
+                <div class="door-point door-alarm" style="top: 65%; left: 30%;" data-door="B202" data-building="B">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="door-point door-normal" style="top: 70%; left: 40%;" data-door="B203" data-building="B">
+                    <i class="fas fa-door-closed"></i>
+                </div>
+
+                <!-- C栋门禁点位 -->
+                <div class="door-point door-normal" style="top: 15%; left: 10%;" data-door="C301" data-building="C">
+                    <i class="fas fa-door-closed"></i>
+                </div>
+                <div class="door-point door-open" style="top: 20%; left: 20%;" data-door="C302" data-building="C">
+                    <i class="fas fa-door-open"></i>
+                </div>
+
+                <!-- D栋门禁点位 -->
+                <div class="door-point door-normal" style="top: 70%; left: 70%;" data-door="D401" data-building="D">
+                    <i class="fas fa-door-closed"></i>
+                </div>
+                <div class="door-point door-open" style="top: 75%; left: 80%;" data-door="D402" data-building="D">
+                    <i class="fas fa-door-open"></i>
+                </div>
+
+                <!-- 门禁详情面板 -->
+                <div id="doorDetails" class="door-details p-4 hidden">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">门禁详情</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">点位编号:</span>
+                            <span class="text-sm font-medium" id="doorId">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">位置:</span>
+                            <span class="text-sm font-medium" id="doorLocation">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">状态:</span>
+                            <span class="text-sm font-medium" id="doorStatus">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">最后开门:</span>
+                            <span class="text-sm font-medium" id="lastOpen">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">在线状态:</span>
+                            <span class="text-sm font-medium" id="onlineStatus">-</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex space-x-2">
+                        <button class="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-door-open mr-1"></i>开门
+                        </button>
+                        <button class="flex-1 bg-gray-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-door-closed mr-1"></i>关门
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 门禁控制标签页 -->
+        <div id="control-tab" class="tab-content">
+
+            <!-- 门禁设备列表 -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900">门禁设备列表</h2>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-600">全选</span>
+                            <input type="checkbox" class="rounded">
+                        </div>
+                    </div>
+                    <!-- 筛选功能 -->
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm text-gray-600">楼栋:</label>
+                            <select id="buildingFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                                <option value="all">全部楼栋</option>
+                                <option value="A">A栋</option>
+                                <option value="B">B栋</option>
+                                <option value="C">C栋</option>
+                                <option value="D">D栋</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm text-gray-600">楼层:</label>
+                            <select id="floorFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                                <option value="all">全部楼层</option>
+                                <option value="1">1楼</option>
+                                <option value="2">2楼</option>
+                                <option value="3">3楼</option>
+                                <option value="4">4楼</option>
+                                <option value="5">5楼</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm text-gray-600">状态:</label>
+                            <select id="statusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                                <option value="all">全部状态</option>
+                                <option value="正常">正常</option>
+                                <option value="开启">开启</option>
+                                <option value="报警">报警</option>
+                                <option value="离线">离线</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="searchInput" placeholder="搜索设备编号或位置..." 
+                                   class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm w-64">
+                            <button id="searchBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button id="resetFilters" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                            <i class="fas fa-undo mr-1"></i>重置筛选
+                        </button>
+                    </div>
+                    <!-- 批量控制功能 -->
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm text-gray-600">已选择 <span id="selectedCount">0</span> 个设备</span>
+                                <div class="flex items-center space-x-2">
+                                    <button id="batchOpenBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                                        <i class="fas fa-door-open mr-1"></i>批量开门
+                                    </button>
+                                    <button id="batchCloseBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                                        <i class="fas fa-door-closed mr-1"></i>批量关门
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button id="selectAllBtn" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                                    <i class="fas fa-check-double mr-1"></i>全选当前页
+                                </button>
+                                <button id="clearSelectionBtn" class="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                                    <i class="fas fa-times mr-1"></i>清除选择
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <input type="checkbox" class="rounded">
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">设备编号</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">位置</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">在线状态</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最后操作</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50 device-row" data-building="A" data-floor="1" data-status="正常" data-device-id="A101">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <input type="checkbox" class="rounded">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">A101</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">A栋1楼东门</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>正常
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>在线
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    10:30 - 张三开门
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <button class="text-green-600 hover:text-green-900 control-btn" data-action="open" data-device="A101">
+                                            <i class="fas fa-door-open"></i>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-gray-900 control-btn" data-action="close" data-device="A101">
+                                            <i class="fas fa-door-closed"></i>
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 device-row" data-building="A" data-floor="1" data-status="开启" data-device-id="A102">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <input type="checkbox" class="rounded">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">A102</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">A栋1楼西门</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>开启
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>在线
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    11:15 - 李四开门
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <button class="text-green-600 hover:text-green-900 control-btn" data-action="open" data-device="A102">
+                                            <i class="fas fa-door-open"></i>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-gray-900 control-btn" data-action="close" data-device="A102">
+                                            <i class="fas fa-door-closed"></i>
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 device-row" data-building="A" data-floor="1" data-status="报警" data-device-id="A103">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <input type="checkbox" class="rounded">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">A103</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">A栋1楼南门</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>报警
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>在线
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    09:45 - 非法开门
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <button class="text-green-600 hover:text-green-900 control-btn" data-action="open" data-device="A103">
+                                            <i class="fas fa-door-open"></i>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-gray-900 control-btn" data-action="close" data-device="A103">
+                                            <i class="fas fa-door-closed"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 device-row" data-building="A" data-floor="1" data-status="离线" data-device-id="A105">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <input type="checkbox" class="rounded">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">A105</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">A栋1楼中门</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <span class="w-2 h-2 bg-gray-500 rounded-full mr-2"></span>离线
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>离线
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    08:30 - 设备离线
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 cursor-not-allowed" disabled>
+                                            <i class="fas fa-door-open"></i>
+                                        </button>
+                                        <button class="text-gray-400 cursor-not-allowed" disabled>
+                                            <i class="fas fa-door-closed"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-wifi-slash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 控制日志 -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mt-6 border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">控制日志</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 bg-green-100 rounded-full">
+                                <i class="fas fa-door-open text-green-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">A101 开门成功</p>
+                                <p class="text-xs text-gray-500">管理员 - 2024-01-15 11:30:25</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">成功</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 bg-gray-100 rounded-full">
+                                <i class="fas fa-door-closed text-gray-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">A102 关门成功</p>
+                                <p class="text-xs text-gray-500">管理员 - 2024-01-15 11:28:15</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">成功</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 bg-red-100 rounded-full">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">A103 控制失败</p>
+                                <p class="text-xs text-gray-500">管理员 - 2024-01-15 11:25:10</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">失败</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 状态监测标签页 -->
+        <div id="monitoring-tab" class="tab-content">
+            <!-- 实时状态概览 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">总设备数</p>
+                            <p class="text-3xl font-bold text-gray-900">156</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <i class="fas fa-door-closed text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600">+2.5%</span>
+                        <span class="text-gray-500 ml-2">较上月</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">在线设备</p>
+                            <p class="text-3xl font-bold text-green-600">148</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <i class="fas fa-wifi text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600">94.9%</span>
+                        <span class="text-gray-500 ml-2">在线率</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">报警设备</p>
+                            <p class="text-3xl font-bold text-red-600">8</p>
+                        </div>
+                        <div class="p-3 bg-red-100 rounded-full animate-pulse">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-red-600">需处理</span>
+                        <span class="text-gray-500 ml-2">3个紧急</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">离线设备</p>
+                            <p class="text-3xl font-bold text-gray-600">8</p>
+                        </div>
+                        <div class="p-3 bg-gray-100 rounded-full">
+                            <i class="fas fa-wifi-slash text-gray-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-gray-600">5.1%</span>
+                        <span class="text-gray-500 ml-2">离线率</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报警处理面板 -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">报警处理</h2>
+                    <div class="flex items-center space-x-2">
+                        <button class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>紧急报警
+                        </button>
+                        <button class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-clock mr-2"></i>长时间开启
+                        </button>
+                        <button class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-tools mr-2"></i>设备故障
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="p-4 rounded-lg border-l-4 border-red-500 bg-red-50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 bg-red-100 rounded-full animate-pulse">
+                                    <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">A103 - 非法开门检测</p>
+                                    <p class="text-xs text-gray-500">A栋1楼南门 - 2024-01-15 11:25:10</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">紧急</span>
+                                <button class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors alarm-btn" data-device="A103" data-type="非法开门检测">
+                                    处理
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-lg border-l-4 border-yellow-500 bg-yellow-50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 bg-yellow-100 rounded-full">
+                                    <i class="fas fa-clock text-yellow-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">A102 - 长时间开启</p>
+                                    <p class="text-xs text-gray-500">A栋1楼西门 - 已开启15分钟</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">警告</span>
+                                <button class="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700 transition-colors alarm-btn" data-device="A102" data-type="长时间开启">
+                                    处理
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-lg border-l-4 border-yellow-500 bg-yellow-50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 bg-yellow-100 rounded-full">
+                                    <i class="fas fa-tools text-yellow-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">A105 - 设备离线</p>
+                                    <p class="text-xs text-gray-500">A栋1楼中门 - 2024-01-15 08:30:00</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">故障</span>
+                                <button class="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700 transition-colors alarm-btn" data-device="A105" data-type="设备离线">
+                                    处理
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 设备状态监控 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 实时状态列表 -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">实时状态监控</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">A101 - A栋1楼东门</p>
+                                        <p class="text-xs text-gray-500">正常 - 最后开门: 10:30</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">正常</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">A102 - A栋1楼西门</p>
+                                        <p class="text-xs text-gray-500">开启 - 已开启15分钟</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">开启</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">A103 - A栋1楼南门</p>
+                                        <p class="text-xs text-gray-500">报警 - 非法开门</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">报警</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">A105 - A栋1楼中门</p>
+                                        <p class="text-xs text-gray-500">离线 - 设备无响应</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">离线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 报警统计图表 -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">报警统计</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-red-500 rounded"></div>
+                                    <span class="text-sm text-gray-700">非法开门</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">3</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                                    <span class="text-sm text-gray-700">长时间开启</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">5</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-orange-500 rounded"></div>
+                                    <span class="text-sm text-gray-700">设备故障</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">8</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-gray-500 rounded"></div>
+                                    <span class="text-sm text-gray-700">设备离线</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">8</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">今日报警总数</span>
+                                <span class="text-lg font-bold text-red-600">24</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm mt-2">
+                                <span class="text-gray-600">已处理</span>
+                                <span class="text-lg font-bold text-green-600">16</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm mt-2">
+                                <span class="text-gray-600">待处理</span>
+                                <span class="text-lg font-bold text-yellow-600">8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报警处置流程 -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mt-6 border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">报警处置流程</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-bell text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-900 mb-1">报警触发</h3>
+                        <p class="text-xs text-gray-500">系统检测到异常</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-check-circle text-yellow-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-900 mb-1">确认报警</h3>
+                        <p class="text-xs text-gray-500">人工确认报警信息</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-user-cog text-green-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-900 mb-1">派单处置</h3>
+                        <p class="text-xs text-gray-500">分配处理人员</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-flag-checkered text-gray-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-900 mb-1">处置完成</h3>
+                        <p class="text-xs text-gray-500">关闭报警记录</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 报警处理对话框 -->
+    <div id="alarmModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 bg-red-100 rounded-full">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">处理报警</h3>
+                            <p class="text-sm text-gray-600">请选择处理方式</p>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <p class="text-sm text-gray-700 mb-3">
+                            设备: <span id="modalAlarmDevice" class="font-medium">-</span><br>
+                            报警类型: <span id="modalAlarmType" class="font-medium">-</span>
+                        </p>
+                        <textarea placeholder="请输入处理说明..." 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 h-20 resize-none"></textarea>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="confirmAlarm" class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                            确认处理
+                        </button>
+                        <button id="cancelAlarm" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制确认对话框 -->
+    <div id="controlModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <i class="fas fa-question-circle text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">确认操作</h3>
+                            <p class="text-sm text-gray-600">请确认是否执行此操作</p>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <p class="text-sm text-gray-700">
+                            设备: <span id="modalDevice" class="font-medium">-</span><br>
+                            操作: <span id="modalAction" class="font-medium">-</span>
+                        </p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="confirmControl" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            确认
+                        </button>
+                        <button id="cancelControl" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 标签页切换功能
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // 移除所有活动状态
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // 激活当前标签页
+                this.classList.add('active');
+                document.getElementById(tabId + '-tab').classList.add('active');
+            });
+        });
+
+        // 门禁点位数据
+        const doorData = {
+            'A101': { location: 'A栋1楼东门', status: '正常', lastOpen: '10:30', online: true, building: 'A', floor: '1', area: 'A区' },
+            'A102': { location: 'A栋1楼西门', status: '开启', lastOpen: '11:15', online: true, building: 'A', floor: '1', area: 'A区' },
+            'A103': { location: 'A栋1楼南门', status: '报警', lastOpen: '09:45', online: true, building: 'A', floor: '1', area: 'A区' },
+            'A104': { location: 'A栋1楼北门', status: '正常', lastOpen: '10:20', online: true, building: 'A', floor: '1', area: 'A区' },
+            'A105': { location: 'A栋1楼中门', status: '离线', lastOpen: '08:30', online: false, building: 'A', floor: '1', area: 'A区' },
+            'B201': { location: 'B栋2楼东门', status: '正常', lastOpen: '10:15', online: true, building: 'B', floor: '2', area: 'B区' },
+            'B202': { location: 'B栋2楼西门', status: '报警', lastOpen: '09:30', online: true, building: 'B', floor: '2', area: 'B区' },
+            'B203': { location: 'B栋2楼南门', status: '正常', lastOpen: '11:10', online: true, building: 'B', floor: '2', area: 'B区' },
+            'C301': { location: 'C栋3楼东门', status: '正常', lastOpen: '10:05', online: true, building: 'C', floor: '3', area: 'C区' },
+            'C302': { location: 'C栋3楼西门', status: '开启', lastOpen: '11:30', online: true, building: 'C', floor: '3', area: 'C区' },
+            'D401': { location: 'D栋4楼东门', status: '正常', lastOpen: '10:35', online: true, building: 'D', floor: '4', area: 'D区' },
+            'D402': { location: 'D栋4楼西门', status: '开启', lastOpen: '11:40', online: true, building: 'D', floor: '4', area: 'D区' }
+        };
+
+        // 楼栋背景图片映射
+        const buildingBackgrounds = {
+            'all': '../L5.png',
+            'A': '../L1.png',
+            'B': '../L5.png',
+            'C': '../L1.png',
+            'D': '../L5.png'
+        };
+
+        // 筛选状态
+        let currentFilters = {
+            building: 'all',
+            floor: 'all',
+            area: 'all'
+        };
+
+        // 门禁点位点击事件
+        document.querySelectorAll('.door-point').forEach(point => {
+            point.addEventListener('click', function() {
+                const doorId = this.getAttribute('data-door');
+                const data = doorData[doorId];
+                
+                if (data) {
+                    // 更新详情内容
+                    document.getElementById('doorId').textContent = doorId;
+                    document.getElementById('doorLocation').textContent = data.location;
+                    document.getElementById('doorStatus').textContent = data.status;
+                    document.getElementById('lastOpen').textContent = data.lastOpen;
+                    document.getElementById('onlineStatus').textContent = data.online ? '在线' : '离线';
+                    
+                    // 计算详情面板位置
+                    const detailsPanel = document.getElementById('doorDetails');
+                    const mapContainer = document.querySelector('.map-container');
+                    const mapRect = mapContainer.getBoundingClientRect();
+                    const pointRect = this.getBoundingClientRect();
+                    
+                    // 获取点位在地图容器中的相对位置
+                    const pointX = pointRect.left - mapRect.left;
+                    const pointY = pointRect.top - mapRect.top;
+                    
+                    // 计算详情面板位置（在点位右侧，如果空间不够则在左侧）
+                    let panelX = pointX + 30; // 距离点位30px
+                    let panelY = pointY - 20; // 稍微向上偏移
+                    
+                    // 检查右边界
+                    const panelWidth = 300; // 面板宽度
+                    if (panelX + panelWidth > mapRect.width) {
+                        panelX = pointX - panelWidth - 10; // 显示在左侧
+                    }
+                    
+                    // 检查左边界
+                    if (panelX < 0) {
+                        panelX = 10;
+                    }
+                    
+                    // 检查上边界
+                    if (panelY < 0) {
+                        panelY = 10;
+                    }
+                    
+                    // 检查下边界
+                    const panelHeight = 200; // 预估面板高度
+                    if (panelY + panelHeight > mapRect.height) {
+                        panelY = mapRect.height - panelHeight - 10;
+                    }
+                    
+                    // 设置面板位置
+                    detailsPanel.style.left = panelX + 'px';
+                    detailsPanel.style.top = panelY + 'px';
+                    detailsPanel.classList.remove('hidden');
+                }
+            });
+        });
+
+        // 点击地图其他地方隐藏详情面板
+        document.querySelector('.map-container').addEventListener('click', function(e) {
+            if (!e.target.closest('.door-point') && !e.target.closest('.door-details')) {
+                document.getElementById('doorDetails').classList.add('hidden');
+            }
+        });
+
+        // 楼栋卡片选择功能
+        document.querySelectorAll('.building-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const selectedBuilding = this.getAttribute('data-building');
+                
+                // 更新筛选状态
+                currentFilters.building = selectedBuilding;
+                
+                // 更新卡片状态
+                document.querySelectorAll('.building-card').forEach(c => {
+                    c.classList.remove('active');
+                    const cardContent = c.querySelector('div');
+                    const text = c.querySelector('span');
+                    
+                    if (c === this) {
+                        // 选中状态
+                        cardContent.className = 'px-3 py-1.5 bg-blue-100 border border-blue-300 rounded cursor-pointer hover:bg-blue-200 transition-colors';
+                        text.className = 'text-sm text-blue-700';
+                    } else {
+                        // 未选中状态
+                        cardContent.className = 'px-3 py-1.5 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 transition-colors';
+                        text.className = 'text-sm text-gray-700';
+                    }
+                });
+                
+                // 切换背景图片
+                const mapContainer = document.querySelector('.map-container');
+                const newBackground = buildingBackgrounds[selectedBuilding];
+                if (newBackground) {
+                    mapContainer.style.backgroundImage = `url('${newBackground}')`;
+                }
+                
+                // 筛选门禁点位
+                document.querySelectorAll('.door-point').forEach(point => {
+                    const building = point.getAttribute('data-building');
+                    if (selectedBuilding === 'all' || building === selectedBuilding) {
+                        point.style.display = 'flex';
+                    } else {
+                        point.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 折叠功能
+        const searchToggle = document.getElementById('searchToggle');
+        if (searchToggle) {
+            searchToggle.addEventListener('click', function() {
+                const content = document.getElementById('searchContent');
+                const icon = document.getElementById('searchIcon');
+                
+                if (content && icon) {
+                    if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                        content.style.maxHeight = '0px';
+                        content.style.opacity = '0';
+                        icon.classList.remove('fa-chevron-up');
+                        icon.classList.add('fa-chevron-down');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        content.style.opacity = '1';
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                    }
+                }
+            });
+        }
+
+        // 门禁控制功能
+        // 控制按钮点击事件
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                const device = this.getAttribute('data-device');
+                
+                document.getElementById('modalDevice').textContent = device;
+                document.getElementById('modalAction').textContent = action === 'open' ? '开门' : '关门';
+                document.getElementById('controlModal').classList.remove('hidden');
+                
+                // 存储当前操作信息
+                document.getElementById('controlModal').setAttribute('data-device', device);
+                document.getElementById('controlModal').setAttribute('data-action', action);
+            });
+        });
+
+        // 确认控制操作
+        const confirmControl = document.getElementById('confirmControl');
+        if (confirmControl) {
+            confirmControl.addEventListener('click', function() {
+                const modal = document.getElementById('controlModal');
+                if (modal) {
+                    const device = modal.getAttribute('data-device');
+                    const action = modal.getAttribute('data-action');
+                    
+                    // 模拟控制操作
+                    console.log(`执行操作: ${device} ${action}`);
+                    
+                    // 显示成功提示
+                    showNotification(`${device} ${action === 'open' ? '开门' : '关门'}操作已执行`, 'success');
+                    
+                    // 关闭对话框
+                    modal.classList.add('hidden');
+                }
+            });
+        }
+
+        // 取消控制操作
+        const cancelControl = document.getElementById('cancelControl');
+        if (cancelControl) {
+            cancelControl.addEventListener('click', function() {
+                const modal = document.getElementById('controlModal');
+                if (modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        }
+
+
+        // 全选功能
+        document.querySelectorAll('thead input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = this.checked;
+                });
+            });
+        });
+
+        // 门禁控制筛选功能
+        function filterDevices() {
+            const buildingFilter = document.getElementById('buildingFilter').value;
+            const floorFilter = document.getElementById('floorFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            
+            const deviceRows = document.querySelectorAll('.device-row');
+            
+            deviceRows.forEach(row => {
+                const building = row.getAttribute('data-building');
+                const floor = row.getAttribute('data-floor');
+                const status = row.getAttribute('data-status');
+                const deviceId = row.getAttribute('data-device-id');
+                const location = row.querySelector('td:nth-child(3) div').textContent.toLowerCase();
+                
+                // 检查楼栋筛选
+                const buildingMatch = buildingFilter === 'all' || building === buildingFilter;
+                
+                // 检查楼层筛选
+                const floorMatch = floorFilter === 'all' || floor === floorFilter;
+                
+                // 检查状态筛选
+                const statusMatch = statusFilter === 'all' || status === statusFilter;
+                
+                // 检查搜索筛选
+                const searchMatch = searchInput === '' || 
+                    deviceId.toLowerCase().includes(searchInput) || 
+                    location.includes(searchInput);
+                
+                // 显示或隐藏行
+                if (buildingMatch && floorMatch && statusMatch && searchMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // 绑定筛选事件
+        document.getElementById('buildingFilter').addEventListener('change', filterDevices);
+        document.getElementById('floorFilter').addEventListener('change', filterDevices);
+        document.getElementById('statusFilter').addEventListener('change', filterDevices);
+        document.getElementById('searchInput').addEventListener('input', filterDevices);
+        document.getElementById('searchBtn').addEventListener('click', filterDevices);
+
+        // 重置筛选功能
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('buildingFilter').value = 'all';
+            document.getElementById('floorFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('searchInput').value = '';
+            filterDevices();
+        });
+
+        // 批量控制功能
+        function updateSelectedCount() {
+            const selectedCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            const count = selectedCheckboxes.length;
+            document.getElementById('selectedCount').textContent = count;
+            
+            // 更新批量控制按钮状态
+            const batchOpenBtn = document.getElementById('batchOpenBtn');
+            const batchCloseBtn = document.getElementById('batchCloseBtn');
+            
+            if (count > 0) {
+                batchOpenBtn.disabled = false;
+                batchCloseBtn.disabled = false;
+            } else {
+                batchOpenBtn.disabled = true;
+                batchCloseBtn.disabled = true;
+            }
+        }
+
+        // 监听所有复选框的变化
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox' && e.target.closest('tbody')) {
+                updateSelectedCount();
+            }
+        });
+
+        // 全选当前页功能
+        document.getElementById('selectAllBtn').addEventListener('click', function() {
+            const visibleRows = document.querySelectorAll('.device-row:not([style*="display: none"])');
+            const checkboxes = document.querySelectorAll('.device-row:not([style*="display: none"]) input[type="checkbox"]');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            
+            // 更新表头全选状态
+            const headerCheckbox = document.querySelector('thead input[type="checkbox"]');
+            headerCheckbox.checked = true;
+            
+            updateSelectedCount();
+        });
+
+        // 清除选择功能
+        document.getElementById('clearSelectionBtn').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // 更新表头全选状态
+            const headerCheckbox = document.querySelector('thead input[type="checkbox"]');
+            headerCheckbox.checked = false;
+            
+            updateSelectedCount();
+        });
+
+        // 批量开门功能
+        document.getElementById('batchOpenBtn').addEventListener('click', function() {
+            const selectedCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            if (selectedCheckboxes.length === 0) {
+                showNotification('请选择要控制的设备', 'warning');
+                return;
+            }
+            
+            const deviceIds = Array.from(selectedCheckboxes).map(checkbox => {
+                const row = checkbox.closest('tr');
+                return row.getAttribute('data-device-id');
+            });
+            
+            if (confirm(`确认要对 ${deviceIds.length} 个设备执行批量开门操作吗？\n设备列表：${deviceIds.join(', ')}`)) {
+                showNotification(`批量开门操作已执行，共${deviceIds.length}个设备`, 'success');
+                // 这里可以添加实际的批量开门逻辑
+            }
+        });
+
+        // 批量关门功能
+        document.getElementById('batchCloseBtn').addEventListener('click', function() {
+            const selectedCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            if (selectedCheckboxes.length === 0) {
+                showNotification('请选择要控制的设备', 'warning');
+                return;
+            }
+            
+            const deviceIds = Array.from(selectedCheckboxes).map(checkbox => {
+                const row = checkbox.closest('tr');
+                return row.getAttribute('data-device-id');
+            });
+            
+            if (confirm(`确认要对 ${deviceIds.length} 个设备执行批量关门操作吗？\n设备列表：${deviceIds.join(', ')}`)) {
+                showNotification(`批量关门操作已执行，共${deviceIds.length}个设备`, 'success');
+                // 这里可以添加实际的批量关门逻辑
+            }
+        });
+
+        // 状态监测功能
+        // 报警处理按钮点击事件
+        document.querySelectorAll('.alarm-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const device = this.getAttribute('data-device');
+                const type = this.getAttribute('data-type');
+                
+                document.getElementById('modalAlarmDevice').textContent = device;
+                document.getElementById('modalAlarmType').textContent = type;
+                document.getElementById('alarmModal').classList.remove('hidden');
+            });
+        });
+
+        // 确认报警处理
+        document.getElementById('confirmAlarm').addEventListener('click', function() {
+            showNotification('报警处理完成', 'success');
+            document.getElementById('alarmModal').classList.add('hidden');
+        });
+
+        // 取消报警处理
+        document.getElementById('cancelAlarm').addEventListener('click', function() {
+            document.getElementById('alarmModal').classList.add('hidden');
+        });
+
+        // 模拟实时数据更新
+        setInterval(() => {
+            // 更新在线设备数
+            const onlineCount = document.querySelector('.text-3xl.font-bold.text-green-600');
+            if (onlineCount) {
+                const currentCount = parseInt(onlineCount.textContent);
+                const newCount = currentCount + Math.floor(Math.random() * 3) - 1;
+                onlineCount.textContent = Math.max(140, Math.min(156, newCount));
+            }
+        }, 5000);
+
+        // 通知函数
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500 text-white' :
+                type === 'warning' ? 'bg-yellow-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
+
